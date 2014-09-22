@@ -1,4 +1,5 @@
 #include"./Math.hpp"
+#include<cstdio>
 
 void Euler_Maclaurin(int Rm, int Nr, double * rm, double * w_rm){
 //get Euler_maclaurin grid
@@ -15,7 +16,7 @@ std::complex<double> integral_3d_infinit(std::complex<double> (*eta)(double x,do
 //order is the lowest lebedev order
 //Nr is the number of point for Euler-Maclaurin radius
 for(int n=0;n<65;++n){
-	if(available_table(n)>0 && order_table(n)<order ){
+	if(available_table(n)>0 && order_table(n)>order ){
 			order=order_table(n);
 			break;
 	}
@@ -36,6 +37,7 @@ for(int n=0;n<Nr;++n){
 		eta_val=eta(xyz[0],xyz[1],xyz[2], par1);	
 		f_val=f(xyz[0],xyz[1],xyz[2], par2);
 		rslt+=std::conj(eta_val)*f_val*w[m]*w_r[n];
+//		printf("eta_val,w[m],w_r[n],rslt=%f,%f,%f,%f, xyz=%f,%f,%f\n",eta_val.real(),w[m],w_r[n],rslt.real(),xyz[0],xyz[1],xyz[2]);
 	}
 }
 

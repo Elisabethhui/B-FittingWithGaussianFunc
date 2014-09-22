@@ -2,42 +2,25 @@
 #include<iostream>
 #include<cstdio>
 #include<cmath>
-#include<complex>
-struct GaussPar{
-	int l[3];
-	std::complex<double> R[3];
-	std::complex<double> alpha;
-	GaussPar();
-};
+#include"IO/IO.hpp"
+#include"Parallelization/Parallelization.hpp"
+#include"./GaussFitting/GaussFitting.hpp"
 
-GaussPar::GaussPar(){
-	l[0]=0;
-	l[1]=0;
-	l[2]=0;
-	R[0]=0;
-	R[1]=0;
-	R[2]=0;
-	alpha=0;
+std::complex<double>  fn(double x, double y, double z, void * par){
+	return 1.0;
 }
 
-
-
-
-std::complex<double> GaussianFn(double x, double y, double z, void * par){
-	GaussPar * parameter=static_cast<GaussPar *>(par);
-	std::complex<double> rR[3];
-	rR[0]=x-parameter->R[0];
-	rR[1]=x-parameter->R[1];
-	rR[2]=x-parameter->R[2];
-	return std::pow(rR[0],parameter->l[0])*std::pow(rR[1],parameter->l[1])*std::pow(rR[2],parameter->l[2])*\
-			exp(-parameter->alpha*(rR[0]*rR[0]+rR[1]*rR[1]+rR[2]*rR[2]));
-}
-
-int main(){
-	std::complex<double> rslt;
-	GaussPar par1;
-	par1.alpha=3.0;
-	rslt=integral_3d_infinit(&GaussianFn,&GaussianFn,&par1, & par1, 100, 100,1);
-	printf("the integration of Gaussian function is (%f,%f)\n",rslt.real(),rslt.imag());
+int main(int argc, char * argv[]){
+	IO io;
+	Parallelization parallel;
+	parallel.Init(argc, argv);
+	std::string file_name="inp.txt";
+	io.Init(file_name, &parallel);
+	GaussFitting fit;
+	void * fn_par(NULL);
+	fit.Init(& io, & fn, & fn_par);
+	fit.Calc_g_g_mat();
+	fit.Calc_g_f_mat();
+	fit.OutputMat();
 	return 0;
 }
